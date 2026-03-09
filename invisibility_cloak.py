@@ -34,3 +34,43 @@ def cloak_effect(frame, mask, background):
     fg = cv.bitwise_and(frame, frame, mask=mask_inv)
     bg = cv.bitwise_and(background, background, mask=mask)
     return cv.add(fg, bg)
+
+
+def main():
+    cap = cv.VideoCapture(0)
+
+    if not cap.isOpened():
+        print("Could not open camera.")
+        return
+
+    try:
+        background = create_background(cap)
+    except ValueError as err:
+        print(f"Error: {err}")
+        cap.release()
+        return
+
+    lower_yellow = np.array([20, 100, 100])
+    upper_yellow = np.array([30, 255, 255])
+
+    print("Stating loop - press 'q' to quit.")
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            print("Could not read frame.")
+            time.sleep(1)
+            continue
+        mask = create_mask(frame, lower_yellow, upper_yellow)
+        result = cloak_effect(frame, mask, background)
+
+        cv.imshow("Invisible cloak", result)
+
+        if cv.waitKey(1) & 0xFF == ord("q"):
+            break
+
+    cap.release()
+    cv.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    main()
