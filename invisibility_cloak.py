@@ -37,7 +37,7 @@ def cloak_effect(frame, mask, background):
 
 
 def main():
-    cap = cv.VideoCapture(0)
+    cap = cv.VideoCapture(1)
 
     if not cap.isOpened():
         print("Could not open camera.")
