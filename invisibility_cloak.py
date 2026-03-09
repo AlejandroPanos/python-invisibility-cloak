@@ -17,3 +17,13 @@ def create_background(cap, num_frames=30):
             return np.median(backgrounds, axis=0).astype(np.uint8)
         else:
             return ValueError("Could not capture frames for the background")
+
+
+def create_mask(frame, lower_color, upper_color):
+    hsv = cv.cvtColor(frame, cv.COLOR_BGR2HSV)
+    mask = cv.inRange(hsv, lower_color, upper_color)
+    mask = cv.morphologyEx(mask, cv.MORPH_OPEN, np.ones((3, 3), np.uint8), iterations=2)
+    mask = cv.morphologyEx(
+        mask, cv.MORPH_DILATE, np.ones((3, 3), np.uint8), iterations=1
+    )
+    return mask
