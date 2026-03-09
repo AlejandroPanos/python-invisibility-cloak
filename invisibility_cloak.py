@@ -27,3 +27,10 @@ def create_mask(frame, lower_color, upper_color):
         mask, cv.MORPH_DILATE, np.ones((3, 3), np.uint8), iterations=1
     )
     return mask
+
+
+def cloak_effect(frame, mask, background):
+    mask_inv = cv.bitwise_not(mask)
+    fg = cv.bitwise_and(frame, frame, mask=mask_inv)
+    bg = cv.bitwise_and(background, background, mask=mask)
+    return cv.add(fg, bg)
